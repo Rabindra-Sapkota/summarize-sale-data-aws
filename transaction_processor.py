@@ -40,7 +40,7 @@ def generate_sql_query(transaction_list):
     """
     column_names = constants.RDS_COLUMN_HEADERS
     data = str(transaction_list).strip('[]')
-    sql_query = f'INSERT INTO {constants.RDS_TABLE_NAME}({column_names}) VALUES {data};'
+    sql_query = f'INSERT INTO {constants.TABLE_NAME}({column_names}) VALUES {data};'
     return sql_query
 
 
@@ -51,11 +51,11 @@ def insert_to_rds(summarized_transaction):
         summarized_transaction(list): List of transaction to insert into database
     """
     sql_query = generate_sql_query(summarized_transaction)
-    connection = pymysql.connect(host=constants.RDS_HOST, user=constants.RDS_USER, passwd=constants.RDS_PASSWORD,
-                                 db=constants.RDS_DB_NAME)
+    connection = pymysql.connect(host=constants.DATABASE_HOST, user=constants.DATABASE_USER, passwd=constants.DATABASE_PASSWORD,
+                                 db=constants.DATABASE_NAME)
 
     with connection:
         with connection.cursor() as cursor:
-            # cursor.execute(f"CREATE TABLE {constants.RDS_TABLE_NAME}")
+            # cursor.execute(f"CREATE TABLE {constants.TABLE_NAME}")
             cursor.execute(sql_query)
         connection.commit()

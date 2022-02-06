@@ -10,8 +10,8 @@ with open('transaction.csv') as my_file:
 summary_txn = summarize_transaction(my_txn, 'my_file')[0]
 print(summary_txn)
 
-connection = pymysql.connect(host=constants.RDS_HOST, user=constants.RDS_USER, passwd=constants.RDS_PASSWORD,
-                             db=constants.RDS_DB_NAME)
+connection = pymysql.connect(host=constants.DATABASE_HOST, user=constants.DATABASE_USER,
+                             passwd=constants.DATABASE_PASSWORD, db=constants.DATABASE_NAME)
 
 # Create table for first time during insert
 '''

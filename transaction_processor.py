@@ -51,7 +51,8 @@ def insert_to_rds(summarized_transaction):
         summarized_transaction(list): List of transaction to insert into database
     """
     sql_query = generate_sql_query(summarized_transaction)
-    connection = pymysql.connect(host=constants.DATABASE_HOST, user=constants.DATABASE_USER, passwd=constants.DATABASE_PASSWORD,
+    connection = pymysql.connect(host=constants.DATABASE_HOST, user=constants.DATABASE_USER,
+                                 passwd=constants.DATABASE_PASSWORD,
                                  db=constants.DATABASE_NAME)
 
     with connection:

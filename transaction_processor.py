@@ -17,10 +17,10 @@ def summarize_transaction(transaction_data, file_name):
         product_name, quantity, amount, revenue = transaction.split(',')
         if product_name in summary_data.keys():
             current_quantity, current_amount, current_revenue = summary_data[product_name]
-            summary_data[product_name] = current_quantity + int(quantity), current_amount + int(amount), \
-                                         current_revenue + int(revenue)
+            summary_data[product_name] = current_quantity + int(quantity), current_amount + float(amount), \
+                                         current_revenue + float(revenue)
         else:
-            summary_data[product_name] = int(quantity), int(amount), int(revenue)
+            summary_data[product_name] = int(quantity), float(amount), float(revenue)
 
     # Store data as [('egg', 5, 100, 10, 'my_file'), ('apple', 1, 200, 20, 'my_file')]
     summary_list = [(key, *value, file_name) for key, value in summary_data.items()]

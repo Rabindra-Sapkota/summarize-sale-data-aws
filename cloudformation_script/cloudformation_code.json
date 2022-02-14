@@ -6,13 +6,18 @@
   "Metadata": {},
 
   "Parameters": {
+     "SubscriptionEmail": {"Type": "String", "Default": "teechtutorial@gmail.com", "Description": "Enter the email to Subscribe the Notifications."},
      "ReprocessBucketName": {"Type": "String", "Default": "teech-tutorial-sales-summarize-reprocess-bucket", "Description": "Enter Name of the Reprocess Bucket"},
      "DynamoDBTableName": {"Type": "String", "Default": "teech-tutorial-sales-summarize-dynamo-table", "Description": "Enter Name of the DynamoDB"},
      "ErrorBucketName": {"Type": "String", "Default": "teech-tutorial-sales-summarize-error-bucket", "Description": "Enter Name of the error Bucket"},
      "PyMySQLLayerZipFileName": {"Type": "String", "Default": "pymysql_layer.zip", "Description": "Enter name of Zip file containing pymysql library"},
      "CloudFormationBucketName": {"Type": "String", "Default": "teech-tutorial-sales-summarize-cloudformation", "Description": "Enter bucket name containing cloudformation scripts"},
      "LambdaCodeZipFileName": {"Type": "String", "Default": "lambda_code.zip", "Description": "Enter name of Zip file containing lambda code"},
-     "LambdaExecutionRoleARN":  {"Type": "String", "Default": "", "Description": "Enter arn of lambda execution role"}
+     "LambdaExecutionRoleARN":  {"Type": "String", "Default": "", "Description": "Enter arn of lambda execution role"},
+     "DatabaseHostName":  {"Type": "String", "Default": "", "Description": "Enter url of database host"},
+     "DatabaseUserName":  {"Type": "String", "Default": "", "Description": "Enter database user name"},
+     "DatabasePasswordValue":  {"Type": "String", "Default": "", "Description": "Enter database password"},
+     "DatabaseName":  {"Type": "String", "Default": "", "Description": "Enter name of database"}
   },
 
   "Resources": {
@@ -34,8 +39,18 @@
         "Description": "API Post Lambda Triggered From Sales Kinesis Data Stream",
         "FunctionName": "teech-tutorial-sales-summarize",
         "MemorySize": 512,
+        "Environment": {"Variables" : {
+            "DYNAMO_TABLE_NAME" : {"Ref": "DynamoDBTable"},
+            "SNS_TOPIC_ARN": {"Ref": "SNSTopic"},
+            "ERROR_BUCKET": {"Ref": "ErrorBucket"},
+            "DATABASE_HOST": {"Ref": "DatabaseHostName"},
+            "DATABASE_USER": {"Ref": "DatabaseUserName"},
+            "DATABASE_PASSWORD": {"Ref": "DatabasePasswordValue"},
+            "DATABASE_NAME": {"Ref": "DatabaseName"}
+        }},
         "Timeout": 600,
-        "Layers": [{"Ref": "PyMySQLLayer"}],
+        "Layers": [{"Ref": "PyMySQLLayer"}, {"Ref": "SNSTopic"}, {"Ref": "ErrorBucket"}, {"Ref": "DynamoDBTable"}],
+        "DependsOn" : "PyMySQLLayer",
         "Tags": [{"Key": "Project", "Value": "sale-summarize"}, {"Key": "Application", "Value": "lambda"}],
         "Handler": "lambda_function.lambda_handler",
         "Role": {"Ref": "LambdaExecutionRoleARN"},
@@ -61,6 +76,7 @@
         "PublicAccessBlockConfiguration": {"BlockPublicAcls": true, "BlockPublicPolicy": true, "IgnorePublicAcls": true, "RestrictPublicBuckets": true},
         "VersioningConfiguration": {"Status": "Suspended"},
         "BucketName": {"Ref": "ReprocessBucketName"},
+        "DependsOn" : "LambdaFunction",
         "NotificationConfiguration": {"LambdaConfigurations": [{"Function": { "Fn::GetAtt" : [ "LambdaFunction", "Arn" ]}, "Event": "s3:ObjectCreated:*"}]},
         "Tags": [{"Key": "Project", "Value": "sale-summarize"}, {"Key": "Application", "Value": "s3 reprocess bucket"}]
       }
@@ -73,6 +89,16 @@
         "VersioningConfiguration": {"Status": "Suspended"},
         "BucketName": {"Ref": "ErrorBucketName"},
         "Tags": [{"Key": "Project", "Value": "sale-summarize"}, {"Key": "Application", "Value": "s3 error bucket"}]
+      }
+    },
+
+    "SNSTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "DisplayName": "Sale Data Summarization Notification",
+        "TopicName": "teech-tutorial-sales-summarize-notification",
+        "Subscription": [{"Endpoint": {"Ref": "SubscriptionEmail"}, "Protocol": "email"}],
+        "Tags": [{"Key": "Project", "Value": "sale-summarize"}, {"Key": "Application", "Value": "sns"}]
       }
     }
   },

@@ -13,7 +13,7 @@ logs in dynamodb and notifies client
 * Test the workflow
 * Validate data in RDS with create_table_get_records_to_test module locally with flag CREATE_TABLE as False
 
-# Demo video for manual deployment
+# Demo video
 * https://youtu.be/HBt8MXHcaPI
 
 # Demo Video for cloud formation deployment

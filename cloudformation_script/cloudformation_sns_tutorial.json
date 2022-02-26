@@ -1,0 +1,47 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "SNS topic and Subscription Test",
+
+  "Metadata": {},
+
+  "Parameters": {
+     "SubscriptionEmail": {
+       "Type": "String",
+       "Default": "teechtutorial@gmail.com",
+       "Description": "Enter the email to Subscribe the Notifications.",
+       "MinLength": "13",
+       "MaxLength": "50"},
+
+     "DeploymentStage": {
+       "Type": "String",
+       "Default": "dev",
+       "AllowedValues": ["dev", "pre-prod", "prod"],
+       "Description": "Enter Deployment Stage of the project"},
+
+    "TestForLength": {
+      "Type": "Number",
+      "Description": "Enter any number between 5 and 10",
+      "MinValue": "5",
+      "MaxValue": "10"
+    }
+
+  },
+
+  "Resources": {
+    "SNSTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "DisplayName": {"Fn::Sub": ["Teech Tutorial Demo SNS ${Stage} Notification", {"Stage": {"Ref": "DeploymentStage"}}]},
+        "TopicName": {"Fn::Sub": ["teech-tutorial-demo-${Stage}-notification", {"Stage": {"Ref": "DeploymentStage"}}]},
+        "Subscription": [{"Endpoint": {"Ref": "SubscriptionEmail"}, "Protocol": "email"}],
+        "Tags": [{"Key": "Project", "Value": "sale-summarize"}, {"Key": "Application", "Value": "sns"}]
+      }
+    }
+  },
+
+  "Outputs": {
+    "SNSArn": {"Description": "SNS Topic ARN", "Value": {"Ref": "SNSTopic"}},
+    "SNSTopicName": {"Description": "SNS Topic Name", "Value": {"Fn::GetAtt" : ["SNSTopic" , "TopicName"]}}
+  }
+}

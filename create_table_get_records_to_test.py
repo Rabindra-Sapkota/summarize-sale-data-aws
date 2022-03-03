@@ -1,10 +1,10 @@
 import pymysql
 
 
-DATABASE_HOST = 'DB_HOST_NAME'
-DATABASE_USER = ''
+DATABASE_HOST = 'db4free.net'
+DATABASE_USER = 'test_user_rabin'
 DATABASE_PASSWORD = ''
-DATABASE_NAME = ''
+DATABASE_NAME = 'test_db_rabin'
 CREATE_TABLE = True
 
 connection = pymysql.connect(host=DATABASE_HOST, user=DATABASE_USER, passwd=DATABASE_PASSWORD, db=DATABASE_NAME)

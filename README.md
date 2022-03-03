@@ -10,6 +10,7 @@ logs in dynamodb and notifies client
 * Create S3 bucket. Upload files of cloudformation code, lambda layer and python code
 * Deploy resources using Cloudformation
 * Subscribe to SNS
+* Add trigger from reprocess s3 to lambda manually
 * Test the workflow
 * Validate data in RDS with create_table_get_records_to_test module locally with flag CREATE_TABLE as False
 

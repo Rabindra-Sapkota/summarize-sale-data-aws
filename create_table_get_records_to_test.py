@@ -1,10 +1,10 @@
 import pymysql
 
 
-DATABASE_HOST = 'DB_HOST_NAME'
-DATABASE_USER = ''
+DATABASE_HOST = 'db4free.net'
+DATABASE_USER = 'test_user_rabin'
 DATABASE_PASSWORD = ''
-DATABASE_NAME = ''
+DATABASE_NAME = 'test_db_rabin'
 CREATE_TABLE = True
 
 connection = pymysql.connect(host=DATABASE_HOST, user=DATABASE_USER, passwd=DATABASE_PASSWORD, db=DATABASE_NAME)
@@ -34,7 +34,7 @@ if CREATE_TABLE:
 print('Getting records from the table')
 
 with connection.cursor() as cursor:
-    cursor.execute("SELECT * FROM test_table;")
+    cursor.execute("SELECT * FROM product_sale_summary;")
     result = cursor.fetchall()
 
 for row in result:

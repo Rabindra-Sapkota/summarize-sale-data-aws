@@ -34,7 +34,7 @@ if CREATE_TABLE:
 print('Getting records from the table')
 
 with connection.cursor() as cursor:
-    cursor.execute("SELECT * FROM test_table;")
+    cursor.execute("SELECT * FROM product_sale_summary;")
     result = cursor.fetchall()
 
 for row in result:
